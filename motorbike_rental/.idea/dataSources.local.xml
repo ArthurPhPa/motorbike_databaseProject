@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="DB-252.26830.46">
+    <data-source name="motorbike_db_2ajl@dpg-d4e5j4je5dus73f9lkb0-a.singapore-postgres.render.com" uuid="872d259d-60fe-448d-b9b4-a5b686749c9a">
+      <database-info product="PostgreSQL" version="18.1 (Debian 18.1-1.pgdg12+2)" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.3" dbms="POSTGRES" exact-version="18.1" exact-driver-version="42.7">
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>admin</user-name>
+      <schema-mapping>
+        <introspection-scope>
+          <node kind="database" qname="@">
+            <node kind="schema" qname="@" />
+          </node>
+        </introspection-scope>
+      </schema-mapping>
+      <ssh-properties>
+        <enabled>false</enabled>
+        <ssh-config-id>01a1888d-196f-4958-b5f4-b6eba442f29e</ssh-config-id>
+      </ssh-properties>
+    </data-source>
+  </component>
+</project>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="motorbike_db_2ajl@dpg-d4e5j4je5dus73f9lkb0-a.singapore-postgres.render.com" uuid="872d259d-60fe-448d-b9b4-a5b686749c9a">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://dpg-d4e5j4je5dus73f9lkb0-a.singapore-postgres.render.com:5432/motorbike_db_2ajl</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>
