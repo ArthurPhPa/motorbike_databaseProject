@@ -1,0 +1,41 @@
+
+
+DROP TABLE IF EXISTS contracts;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS motorbikes;
+
+CREATE TABLE users
+(
+    id           INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    first_name   VARCHAR NOT NULL,
+    last_name    VARCHAR NOT NULL,
+    phone_number VARCHAR NOT NULL
+
+);
+
+CREATE TABLE motorbikes
+(
+    license_number VARCHAR(50) PRIMARY KEY,
+    model          VARCHAR NOT NULL,
+    longitude      REAL,
+    latitude       REAL
+);
+
+
+CREATE TABLE contracts
+(
+    id                       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id                  INT            NOT NULL,
+    motorbike_licence_number VARCHAR(50)    NOT NULL,
+    image_url                VARCHAR UNIQUE NOT NULL,
+    start_date               DATE           NOT NULL,
+    end_date                 DATE           NOT NULL,
+
+    CONSTRAINT fk_contracts_users
+        FOREIGN KEY (user_id)
+            REFERENCES users (id),
+
+    CONSTRAINT fk_contracts_motorbikes
+        FOREIGN KEY (motorbike_licence_number)
+            REFERENCES motorbikes (license_number)
+)

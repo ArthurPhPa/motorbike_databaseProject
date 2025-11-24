@@ -3,15 +3,7 @@
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.53">
     <root id="1">
       <DateStyle>mdy</DateStyle>
-      <Grants>1||-9223372036854775808|c|G
-1||10|c|G
-1||10|C|G
-1||10|T|G
-4||-9223372036854775808|c|G
-4||10|c|G
-4||10|C|G
-4||10|T|G</Grants>
-      <IntrospectionStateNumber>9155</IntrospectionStateNumber>
+      <IntrospectionStateNumber>18327</IntrospectionStateNumber>
       <ServerVersion>18.1</ServerVersion>
       <StartupTime>1763465656</StartupTime>
       <TimeZones>true ACDT
@@ -1409,7 +1401,7 @@ false posixrules
 13229||10|C|G
 13229||-9223372036854775808|U|G
 13229||10|U|G</Grants>
-      <IntrospectionStateNumber>9155</IntrospectionStateNumber>
+      <IntrospectionStateNumber>18327</IntrospectionStateNumber>
       <ObjectId>16389</ObjectId>
       <OwnerName>admin</OwnerName>
     </database>
@@ -4946,14 +4938,254 @@ false posixrules
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <LastIntrospectionL1Xid>9155</LastIntrospectionL1Xid>
-      <LastIntrospectionL2Xid>9155</LastIntrospectionL2Xid>
-      <LastIntrospectionL3Xid>9155</LastIntrospectionL3Xid>
+      <LastIntrospectionL1Xid>18327</LastIntrospectionL1Xid>
+      <LastIntrospectionL2Xid>18327</LastIntrospectionL2Xid>
+      <LastIntrospectionL3Xid>18327</LastIntrospectionL3Xid>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2025-11-21.09:28:12</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-11-24.13:52:54</LastIntrospectionLocalTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>759</StateNumber>
       <OwnerName>admin</OwnerName>
     </schema>
+    <routine id="276" parent="275" name="get_motorbike_location">
+      <ArgumentsDefinition>license character varying</ArgumentsDefinition>
+      <DetailsLevel>3</DetailsLevel>
+      <ObjectId>16539</ObjectId>
+      <ResultsDefinition>TABLE(lon real, lat real)</ResultsDefinition>
+      <ReturnsSet>1</ReturnsSet>
+      <SourceTextLength>142</SourceTextLength>
+      <StateNumber>18437</StateNumber>
+      <LanguageName>plpgsql</LanguageName>
+      <OwnerName>admin</OwnerName>
+    </routine>
+    <sequence id="277" parent="275" name="contracts_id_seq">
+      <DetailsLevel>2</DetailsLevel>
+      <ObjectId>16418</ObjectId>
+      <SequenceIdentity>1</SequenceIdentity>
+      <StartValue>1</StartValue>
+      <StateNumber>18326</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <OwnerName>admin</OwnerName>
+    </sequence>
+    <sequence id="278" parent="275" name="users_id_seq">
+      <DetailsLevel>2</DetailsLevel>
+      <ObjectId>16398</ObjectId>
+      <SequenceIdentity>1</SequenceIdentity>
+      <StartValue>1</StartValue>
+      <StateNumber>18324</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <OwnerName>admin</OwnerName>
+    </sequence>
+    <table id="279" parent="275" name="contracts">
+      <DetailsLevel>2</DetailsLevel>
+      <ObjectId>16513</ObjectId>
+      <StateNumber>18395</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>admin</OwnerName>
+    </table>
+    <table id="280" parent="275" name="motorbikes">
+      <DetailsLevel>2</DetailsLevel>
+      <ObjectId>16503</ObjectId>
+      <StateNumber>18395</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>admin</OwnerName>
+    </table>
+    <table id="281" parent="275" name="users">
+      <DetailsLevel>2</DetailsLevel>
+      <ObjectId>16492</ObjectId>
+      <StateNumber>18395</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>admin</OwnerName>
+    </table>
+    <argument id="282" parent="276">
+      <ArgumentDirection>T</ArgumentDirection>
+      <StoredType>table(&quot;lon&quot; real, &quot;lat&quot; real)|0v</StoredType>
+    </argument>
+    <argument id="283" parent="276" name="license">
+      <Position>1</Position>
+      <StoredType>varchar|0s</StoredType>
+    </argument>
+    <column id="284" parent="279" name="id">
+      <IdentityKind>always</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>18395</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>16512</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="285" parent="279" name="user_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>18395</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="286" parent="279" name="motorbike_licence_number">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>18395</StateNumber>
+      <StoredType>varchar(50)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="287" parent="279" name="image_url">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>18395</StateNumber>
+      <StoredType>varchar|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="288" parent="279" name="start_date">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>18395</StateNumber>
+      <StoredType>date|0s</StoredType>
+      <TypeId>1082</TypeId>
+    </column>
+    <column id="289" parent="279" name="end_date">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>18395</StateNumber>
+      <StoredType>date|0s</StoredType>
+      <TypeId>1082</TypeId>
+    </column>
+    <foreign-key id="290" parent="279" name="fk_contracts_users">
+      <ColNames>user_id</ColNames>
+      <ObjectId>16528</ObjectId>
+      <StateNumber>18395</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>16492</RefTableId>
+    </foreign-key>
+    <foreign-key id="291" parent="279" name="fk_contracts_motorbikes">
+      <ColNames>motorbike_licence_number</ColNames>
+      <ObjectId>16533</ObjectId>
+      <StateNumber>18395</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>16503</RefTableId>
+    </foreign-key>
+    <index id="292" parent="279" name="contracts_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>16524</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>18395</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="293" parent="279" name="contracts_image_url_key">
+      <ColNames>image_url</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>16526</ObjectId>
+      <StateNumber>18395</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="294" parent="279" name="contracts_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>16525</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>18395</StateNumber>
+      <UnderlyingIndexId>16524</UnderlyingIndexId>
+    </key>
+    <key id="295" parent="279" name="contracts_image_url_key">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>16527</ObjectId>
+      <StateNumber>18395</StateNumber>
+      <UnderlyingIndexId>16526</UnderlyingIndexId>
+    </key>
+    <column id="296" parent="280" name="license_number">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>18394</StateNumber>
+      <StoredType>varchar(50)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="297" parent="280" name="model">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>18394</StateNumber>
+      <StoredType>varchar|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="298" parent="280" name="longitude">
+      <Position>3</Position>
+      <StateNumber>18394</StateNumber>
+      <StoredType>real|0s</StoredType>
+      <TypeId>700</TypeId>
+    </column>
+    <column id="299" parent="280" name="latitude">
+      <Position>4</Position>
+      <StateNumber>18394</StateNumber>
+      <StoredType>real|0s</StoredType>
+      <TypeId>700</TypeId>
+    </column>
+    <index id="300" parent="280" name="motorbikes_pkey">
+      <ColNames>license_number</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>16510</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>18394</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="301" parent="280" name="motorbikes_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>16511</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>18394</StateNumber>
+      <UnderlyingIndexId>16510</UnderlyingIndexId>
+    </key>
+    <column id="302" parent="281" name="id">
+      <IdentityKind>always</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>18393</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <SequenceId>16491</SequenceId>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="303" parent="281" name="first_name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>18393</StateNumber>
+      <StoredType>varchar|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="304" parent="281" name="last_name">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>18393</StateNumber>
+      <StoredType>varchar|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="305" parent="281" name="phone_number">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>18393</StateNumber>
+      <StoredType>varchar|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="306" parent="281" name="users_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>16501</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>18393</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="307" parent="281" name="users_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>16502</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>18393</StateNumber>
+      <UnderlyingIndexId>16501</UnderlyingIndexId>
+    </key>
   </database-model>
 </dataSource>
