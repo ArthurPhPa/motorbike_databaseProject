@@ -1,0 +1,57 @@
+
+DO $$
+BEGIN
+    PERFORM fn_create_motorbike('1230bb', 'Honda Wave 110i', 'working', 100.327136, 13.794899);
+    PERFORM fn_create_motorbike('1231bb', 'Honda PCX 160', 'working', 100.327136, 13.794899);
+    PERFORM fn_create_motorbike('1232bb', 'Yamaha Grand Filano', 'working', 100.327136, 13.794899);
+    PERFORM fn_create_motorbike('1233bb', 'Honda Scoopy i', 'repairing', 100.327136, 13.794899);
+    PERFORM fn_create_motorbike('1234bb', 'Honda Click 160', 'working', 100.327136, 13.794899);
+    PERFORM fn_create_motorbike('1235bb', 'Yamaha XMAX 300', 'working', 100.327136, 13.794899);
+    PERFORM fn_create_motorbike('1236bb', 'Vespa Sprint 150', 'repairing', 100.327136, 13.794899);
+    PERFORM fn_create_motorbike('1237bb', 'Honda Forza 350', 'working', 100.327136, 13.794899);
+    PERFORM fn_create_motorbike('1238bb', 'Honda Lead 125', 'working', 100.327136, 13.794899);
+    PERFORM fn_create_motorbike('1239bb', 'Yamaha Finn', 'working', 100.327136, 13.794899);
+END $$;
+
+
+
+
+DO $$
+BEGIN
+    PERFORM fn_create_user('Somchai', 'Jaidee', '0812345678');
+    PERFORM fn_create_user('Nattapong', 'Srisuk', '0898765432');
+    PERFORM fn_create_user('Pichai', 'Wongwat', '0861112222');
+    PERFORM fn_create_user('Malee', 'Thongdee', '0903334444');
+    PERFORM fn_create_user('Somsak', 'Prasert', '0825556666');
+    PERFORM fn_create_user('Arthit', 'Ratanaporn', '0917778888');
+    PERFORM fn_create_user('Kanda', 'Saelim', '0849990000');
+    PERFORM fn_create_user('Wichai', 'Boonmee', '0831234567');
+    PERFORM fn_create_user('Sunisa', 'Chaisri', '0928765432');
+    PERFORM fn_create_user('Anong', 'Sukhum', '0852223333');
+END $$;
+
+
+
+
+
+
+DO $$
+BEGIN
+    PERFORM fn_create_booking(1, '1230bb', NULL, '2025-01-01', '2025-01-05');
+    PERFORM fn_create_booking(2, '1231bb', NULL, '2025-01-02', '2025-01-07');
+    PERFORM fn_create_booking(3, '1232bb', NULL, '2025-01-05', '2025-01-10');
+    PERFORM fn_create_booking(4, '1234bb', NULL, '2025-01-01', '2025-01-03');
+    PERFORM fn_create_booking(5, '1235bb', NULL, '2025-01-10', '2025-01-15');
+    PERFORM fn_create_booking(6, '1237bb', NULL, '2025-01-12', '2025-01-18');
+    PERFORM fn_create_booking(7, '1238bb', NULL, '2025-02-01', '2025-02-05');
+    PERFORM fn_create_booking(8, '1239bb', NULL, '2025-02-01', '2025-02-05');
+    PERFORM fn_create_booking(9, '1230bb', NULL, '2025-02-10', '2025-02-15');
+    PERFORM fn_create_booking(10, '1231bb', NULL, '2025-02-10', '2025-02-12');
+    PERFORM fn_create_booking(1, '1232bb', NULL, '2025-02-15', '2025-02-20');
+    PERFORM fn_create_booking(2, '1234bb', NULL, '2025-03-01', '2025-03-07');
+    PERFORM fn_create_booking(3, '1235bb', NULL, '2025-03-05', '2025-03-10');
+    PERFORM fn_create_booking(4, '1237bb', NULL, '2025-03-10', '2025-03-15');
+    PERFORM fn_create_booking(5, '1238bb', NULL, '2025-03-20', '2025-03-25');
+END $$;
+
+
