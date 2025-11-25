@@ -15,19 +15,23 @@ CREATE TABLE users
 
 CREATE TABLE motorbikes
 (
-    license_number VARCHAR(50) PRIMARY KEY,
+    license        VARCHAR(50) PRIMARY KEY,
     model          VARCHAR NOT NULL,
+    status	   VARCHAR NOT NULL,
     longitude      REAL,
-    latitude       REAL
+    latitude       REAL,
+
+    CONSTRAINT chk_status CHECK (status IN ('working', 'in repair'))
+
 );
 
 
-CREATE TABLE contracts
+CREATE TABLE bookings
 (
     id                       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id                  INT            NOT NULL,
     motorbike_licence_number VARCHAR(50)    NOT NULL,
-    image_url                VARCHAR UNIQUE NOT NULL,
+    contract_image_url       VARCHAR UNIQUE NOT NULL,
     start_date               DATE           NOT NULL,
     end_date                 DATE           NOT NULL,
 
