@@ -5033,7 +5033,27 @@ false posixrules
       <LanguageName>plpgsql</LanguageName>
       <OwnerName>admin</OwnerName>
     </routine>
-    <routine id="284" parent="275" name="fn_get_available_motorbikes">
+    <routine id="284" parent="275" name="fn_get_all_motorbikes">
+      <DetailsLevel>3</DetailsLevel>
+      <ObjectId>16683</ObjectId>
+      <ResultsDefinition>SETOF motorbikes</ResultsDefinition>
+      <ReturnsSet>1</ReturnsSet>
+      <SourceTextLength>86</SourceTextLength>
+      <StateNumber>21410</StateNumber>
+      <LanguageName>plpgsql</LanguageName>
+      <OwnerName>admin</OwnerName>
+    </routine>
+    <routine id="285" parent="275" name="fn_get_all_users">
+      <DetailsLevel>3</DetailsLevel>
+      <ObjectId>16682</ObjectId>
+      <ResultsDefinition>SETOF users</ResultsDefinition>
+      <ReturnsSet>1</ReturnsSet>
+      <SourceTextLength>90</SourceTextLength>
+      <StateNumber>21402</StateNumber>
+      <LanguageName>plpgsql</LanguageName>
+      <OwnerName>admin</OwnerName>
+    </routine>
+    <routine id="286" parent="275" name="fn_get_available_motorbikes">
       <ArgumentsDefinition>s_date date, e_date date</ArgumentsDefinition>
       <DetailsLevel>3</DetailsLevel>
       <ObjectId>16664</ObjectId>
@@ -5044,7 +5064,18 @@ false posixrules
       <LanguageName>plpgsql</LanguageName>
       <OwnerName>admin</OwnerName>
     </routine>
-    <routine id="285" parent="275" name="fn_get_motorbike_booking_dates">
+    <routine id="287" parent="275" name="fn_get_booking_by_id">
+      <ArgumentsDefinition>b_id integer</ArgumentsDefinition>
+      <DetailsLevel>3</DetailsLevel>
+      <ObjectId>16678</ObjectId>
+      <ResultsDefinition>bookings</ResultsDefinition>
+      <Rows>0.0</Rows>
+      <SourceTextLength>140</SourceTextLength>
+      <StateNumber>21347</StateNumber>
+      <LanguageName>plpgsql</LanguageName>
+      <OwnerName>admin</OwnerName>
+    </routine>
+    <routine id="288" parent="275" name="fn_get_motorbike_booking_dates">
       <ArgumentsDefinition>m_license character varying</ArgumentsDefinition>
       <DetailsLevel>3</DetailsLevel>
       <ObjectId>16672</ObjectId>
@@ -5055,7 +5086,7 @@ false posixrules
       <LanguageName>plpgsql</LanguageName>
       <OwnerName>admin</OwnerName>
     </routine>
-    <routine id="286" parent="275" name="fn_get_motorbike_by_licence">
+    <routine id="289" parent="275" name="fn_get_motorbike_by_licence">
       <ArgumentsDefinition>m_licence character varying</ArgumentsDefinition>
       <DetailsLevel>3</DetailsLevel>
       <ObjectId>16663</ObjectId>
@@ -5066,7 +5097,7 @@ false posixrules
       <LanguageName>plpgsql</LanguageName>
       <OwnerName>admin</OwnerName>
     </routine>
-    <routine id="287" parent="275" name="fn_get_motorbike_location">
+    <routine id="290" parent="275" name="fn_get_motorbike_location">
       <ArgumentsDefinition>m_license character varying</ArgumentsDefinition>
       <DetailsLevel>3</DetailsLevel>
       <ObjectId>16644</ObjectId>
@@ -5077,7 +5108,7 @@ false posixrules
       <LanguageName>plpgsql</LanguageName>
       <OwnerName>admin</OwnerName>
     </routine>
-    <routine id="288" parent="275" name="fn_get_user_by_id">
+    <routine id="291" parent="275" name="fn_get_user_by_id">
       <ArgumentsDefinition>u_id character varying</ArgumentsDefinition>
       <DetailsLevel>3</DetailsLevel>
       <ObjectId>16675</ObjectId>
@@ -5088,7 +5119,7 @@ false posixrules
       <LanguageName>plpgsql</LanguageName>
       <OwnerName>admin</OwnerName>
     </routine>
-    <routine id="289" parent="275" name="fn_update_booking_contract">
+    <routine id="292" parent="275" name="fn_update_booking_contract">
       <ArgumentsDefinition>b_id integer, new_url character varying</ArgumentsDefinition>
       <DetailsLevel>3</DetailsLevel>
       <ObjectId>16673</ObjectId>
@@ -5099,7 +5130,18 @@ false posixrules
       <LanguageName>plpgsql</LanguageName>
       <OwnerName>admin</OwnerName>
     </routine>
-    <routine id="290" parent="275" name="fn_update_motorbike_location">
+    <routine id="293" parent="275" name="fn_update_booking_dates">
+      <ArgumentsDefinition>b_id integer, new_start_date date, new_end_date date</ArgumentsDefinition>
+      <DetailsLevel>3</DetailsLevel>
+      <ObjectId>16681</ObjectId>
+      <ResultsDefinition>void</ResultsDefinition>
+      <Rows>0.0</Rows>
+      <SourceTextLength>591</SourceTextLength>
+      <StateNumber>21379</StateNumber>
+      <LanguageName>plpgsql</LanguageName>
+      <OwnerName>admin</OwnerName>
+    </routine>
+    <routine id="294" parent="275" name="fn_update_motorbike_location">
       <ArgumentsDefinition>m_licence character varying, lon real, lat real</ArgumentsDefinition>
       <DetailsLevel>3</DetailsLevel>
       <ObjectId>16669</ObjectId>
@@ -5110,7 +5152,7 @@ false posixrules
       <LanguageName>plpgsql</LanguageName>
       <OwnerName>admin</OwnerName>
     </routine>
-    <routine id="291" parent="275" name="fn_update_motorbike_status">
+    <routine id="295" parent="275" name="fn_update_motorbike_status">
       <ArgumentsDefinition>m_licence character varying, new_status character varying</ArgumentsDefinition>
       <DetailsLevel>3</DetailsLevel>
       <ObjectId>16667</ObjectId>
@@ -5121,7 +5163,7 @@ false posixrules
       <LanguageName>plpgsql</LanguageName>
       <OwnerName>admin</OwnerName>
     </routine>
-    <sequence id="292" parent="275" name="contracts_id_seq">
+    <sequence id="296" parent="275" name="contracts_id_seq">
       <DetailsLevel>2</DetailsLevel>
       <ObjectId>16616</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
@@ -5130,7 +5172,7 @@ false posixrules
       <StoredType>integer|0s</StoredType>
       <OwnerName>admin</OwnerName>
     </sequence>
-    <sequence id="293" parent="275" name="users_id_seq">
+    <sequence id="297" parent="275" name="users_id_seq">
       <DetailsLevel>2</DetailsLevel>
       <ObjectId>16595</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
@@ -5139,208 +5181,240 @@ false posixrules
       <StoredType>integer|0s</StoredType>
       <OwnerName>admin</OwnerName>
     </sequence>
-    <table id="294" parent="275" name="bookings">
+    <table id="298" parent="275" name="bookings">
       <DetailsLevel>2</DetailsLevel>
       <ObjectId>16617</ObjectId>
       <StateNumber>21064</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>admin</OwnerName>
     </table>
-    <table id="295" parent="275" name="motorbikes">
+    <table id="299" parent="275" name="motorbikes">
       <DetailsLevel>2</DetailsLevel>
       <ObjectId>16649</ObjectId>
       <StateNumber>20875</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>admin</OwnerName>
     </table>
-    <table id="296" parent="275" name="users">
+    <table id="300" parent="275" name="users">
       <DetailsLevel>2</DetailsLevel>
       <ObjectId>16596</ObjectId>
       <StateNumber>20258</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>admin</OwnerName>
     </table>
-    <argument id="297" parent="276">
+    <argument id="301" parent="276">
       <ArgumentDirection>R</ArgumentDirection>
       <StoredType>void|0s</StoredType>
     </argument>
-    <argument id="298" parent="276" name="u_id">
+    <argument id="302" parent="276" name="u_id">
       <Position>1</Position>
       <StoredType>integer|0s</StoredType>
     </argument>
-    <argument id="299" parent="276" name="m_licence">
+    <argument id="303" parent="276" name="m_licence">
       <Position>2</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="300" parent="276" name="image_link">
+    <argument id="304" parent="276" name="image_link">
       <Position>3</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="301" parent="276" name="start_d">
+    <argument id="305" parent="276" name="start_d">
       <Position>4</Position>
       <StoredType>date|0s</StoredType>
     </argument>
-    <argument id="302" parent="276" name="end_d">
+    <argument id="306" parent="276" name="end_d">
       <Position>5</Position>
       <StoredType>date|0s</StoredType>
     </argument>
-    <argument id="303" parent="277">
+    <argument id="307" parent="277">
       <ArgumentDirection>R</ArgumentDirection>
       <StoredType>void|0s</StoredType>
     </argument>
-    <argument id="304" parent="277" name="m_licence">
+    <argument id="308" parent="277" name="m_licence">
       <Position>1</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="305" parent="277" name="m_model">
+    <argument id="309" parent="277" name="m_model">
       <Position>2</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="306" parent="277" name="m_status">
+    <argument id="310" parent="277" name="m_status">
       <Position>3</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="307" parent="277" name="lon">
+    <argument id="311" parent="277" name="lon">
       <Position>4</Position>
       <StoredType>real|0s</StoredType>
     </argument>
-    <argument id="308" parent="277" name="lat">
+    <argument id="312" parent="277" name="lat">
       <Position>5</Position>
       <StoredType>real|0s</StoredType>
     </argument>
-    <argument id="309" parent="278">
+    <argument id="313" parent="278">
       <ArgumentDirection>R</ArgumentDirection>
       <StoredType>void|0s</StoredType>
     </argument>
-    <argument id="310" parent="278" name="firstname">
+    <argument id="314" parent="278" name="firstname">
       <Position>1</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="311" parent="278" name="lastname">
+    <argument id="315" parent="278" name="lastname">
       <Position>2</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="312" parent="278" name="phonenumber">
+    <argument id="316" parent="278" name="phonenumber">
       <Position>3</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="313" parent="279">
+    <argument id="317" parent="279">
       <ArgumentDirection>R</ArgumentDirection>
       <StoredType>void|0s</StoredType>
     </argument>
-    <argument id="314" parent="279" name="b_id">
+    <argument id="318" parent="279" name="b_id">
       <Position>1</Position>
       <StoredType>integer|0s</StoredType>
     </argument>
-    <argument id="315" parent="280">
+    <argument id="319" parent="280">
       <ArgumentDirection>R</ArgumentDirection>
       <StoredType>void|0s</StoredType>
     </argument>
-    <argument id="316" parent="280" name="licence">
+    <argument id="320" parent="280" name="licence">
       <Position>1</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="317" parent="281">
+    <argument id="321" parent="281">
       <ArgumentDirection>R</ArgumentDirection>
       <StoredType>void|0s</StoredType>
     </argument>
-    <argument id="318" parent="281" name="u_id">
+    <argument id="322" parent="281" name="u_id">
       <Position>1</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="319" parent="282">
+    <argument id="323" parent="282">
       <ArgumentDirection>T</ArgumentDirection>
       <StoredType>table(&quot;motorbike_licence_number&quot; varchar)|0v</StoredType>
     </argument>
-    <argument id="320" parent="283">
+    <argument id="324" parent="283">
       <ArgumentDirection>R</ArgumentDirection>
       <StoredType>setof() bookings|0s</StoredType>
     </argument>
-    <argument id="321" parent="284">
+    <argument id="325" parent="284">
+      <ArgumentDirection>R</ArgumentDirection>
+      <StoredType>setof() motorbikes|0s</StoredType>
+    </argument>
+    <argument id="326" parent="285">
+      <ArgumentDirection>R</ArgumentDirection>
+      <StoredType>setof() users|0s</StoredType>
+    </argument>
+    <argument id="327" parent="286">
       <ArgumentDirection>R</ArgumentDirection>
       <StoredType>setof() varchar|0s</StoredType>
     </argument>
-    <argument id="322" parent="284" name="s_date">
+    <argument id="328" parent="286" name="s_date">
       <Position>1</Position>
       <StoredType>date|0s</StoredType>
     </argument>
-    <argument id="323" parent="284" name="e_date">
+    <argument id="329" parent="286" name="e_date">
       <Position>2</Position>
       <StoredType>date|0s</StoredType>
     </argument>
-    <argument id="324" parent="285">
-      <ArgumentDirection>T</ArgumentDirection>
-      <StoredType>table(&quot;s&quot; date, &quot;e&quot; date)|0v</StoredType>
-    </argument>
-    <argument id="325" parent="285" name="m_license">
-      <Position>1</Position>
-      <StoredType>varchar|0s</StoredType>
-    </argument>
-    <argument id="326" parent="286">
+    <argument id="330" parent="287">
       <ArgumentDirection>R</ArgumentDirection>
-      <StoredType>motorbikes|0s</StoredType>
+      <StoredType>bookings|0s</StoredType>
     </argument>
-    <argument id="327" parent="286" name="m_licence">
-      <Position>1</Position>
-      <StoredType>varchar|0s</StoredType>
-    </argument>
-    <argument id="328" parent="287">
-      <ArgumentDirection>T</ArgumentDirection>
-      <StoredType>table(&quot;lon&quot; real, &quot;lat&quot; real)|0v</StoredType>
-    </argument>
-    <argument id="329" parent="287" name="m_license">
-      <Position>1</Position>
-      <StoredType>varchar|0s</StoredType>
-    </argument>
-    <argument id="330" parent="288">
-      <ArgumentDirection>R</ArgumentDirection>
-      <StoredType>users|0s</StoredType>
-    </argument>
-    <argument id="331" parent="288" name="u_id">
-      <Position>1</Position>
-      <StoredType>varchar|0s</StoredType>
-    </argument>
-    <argument id="332" parent="289">
-      <ArgumentDirection>R</ArgumentDirection>
-      <StoredType>void|0s</StoredType>
-    </argument>
-    <argument id="333" parent="289" name="b_id">
+    <argument id="331" parent="287" name="b_id">
       <Position>1</Position>
       <StoredType>integer|0s</StoredType>
     </argument>
-    <argument id="334" parent="289" name="new_url">
-      <Position>2</Position>
-      <StoredType>varchar|0s</StoredType>
+    <argument id="332" parent="288">
+      <ArgumentDirection>T</ArgumentDirection>
+      <StoredType>table(&quot;s&quot; date, &quot;e&quot; date)|0v</StoredType>
     </argument>
-    <argument id="335" parent="290">
-      <ArgumentDirection>R</ArgumentDirection>
-      <StoredType>void|0s</StoredType>
-    </argument>
-    <argument id="336" parent="290" name="m_licence">
+    <argument id="333" parent="288" name="m_license">
       <Position>1</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="337" parent="290" name="lon">
+    <argument id="334" parent="289">
+      <ArgumentDirection>R</ArgumentDirection>
+      <StoredType>motorbikes|0s</StoredType>
+    </argument>
+    <argument id="335" parent="289" name="m_licence">
+      <Position>1</Position>
+      <StoredType>varchar|0s</StoredType>
+    </argument>
+    <argument id="336" parent="290">
+      <ArgumentDirection>T</ArgumentDirection>
+      <StoredType>table(&quot;lon&quot; real, &quot;lat&quot; real)|0v</StoredType>
+    </argument>
+    <argument id="337" parent="290" name="m_license">
+      <Position>1</Position>
+      <StoredType>varchar|0s</StoredType>
+    </argument>
+    <argument id="338" parent="291">
+      <ArgumentDirection>R</ArgumentDirection>
+      <StoredType>users|0s</StoredType>
+    </argument>
+    <argument id="339" parent="291" name="u_id">
+      <Position>1</Position>
+      <StoredType>varchar|0s</StoredType>
+    </argument>
+    <argument id="340" parent="292">
+      <ArgumentDirection>R</ArgumentDirection>
+      <StoredType>void|0s</StoredType>
+    </argument>
+    <argument id="341" parent="292" name="b_id">
+      <Position>1</Position>
+      <StoredType>integer|0s</StoredType>
+    </argument>
+    <argument id="342" parent="292" name="new_url">
+      <Position>2</Position>
+      <StoredType>varchar|0s</StoredType>
+    </argument>
+    <argument id="343" parent="293">
+      <ArgumentDirection>R</ArgumentDirection>
+      <StoredType>void|0s</StoredType>
+    </argument>
+    <argument id="344" parent="293" name="b_id">
+      <Position>1</Position>
+      <StoredType>integer|0s</StoredType>
+    </argument>
+    <argument id="345" parent="293" name="new_start_date">
+      <Position>2</Position>
+      <StoredType>date|0s</StoredType>
+    </argument>
+    <argument id="346" parent="293" name="new_end_date">
+      <Position>3</Position>
+      <StoredType>date|0s</StoredType>
+    </argument>
+    <argument id="347" parent="294">
+      <ArgumentDirection>R</ArgumentDirection>
+      <StoredType>void|0s</StoredType>
+    </argument>
+    <argument id="348" parent="294" name="m_licence">
+      <Position>1</Position>
+      <StoredType>varchar|0s</StoredType>
+    </argument>
+    <argument id="349" parent="294" name="lon">
       <Position>2</Position>
       <StoredType>real|0s</StoredType>
     </argument>
-    <argument id="338" parent="290" name="lat">
+    <argument id="350" parent="294" name="lat">
       <Position>3</Position>
       <StoredType>real|0s</StoredType>
     </argument>
-    <argument id="339" parent="291">
+    <argument id="351" parent="295">
       <ArgumentDirection>R</ArgumentDirection>
       <StoredType>void|0s</StoredType>
     </argument>
-    <argument id="340" parent="291" name="m_licence">
+    <argument id="352" parent="295" name="m_licence">
       <Position>1</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <argument id="341" parent="291" name="new_status">
+    <argument id="353" parent="295" name="new_status">
       <Position>2</Position>
       <StoredType>varchar|0s</StoredType>
     </argument>
-    <column id="342" parent="294" name="id">
+    <column id="354" parent="298" name="id">
       <IdentityKind>always</IdentityKind>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5349,48 +5423,48 @@ false posixrules
       <SequenceId>16616</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="343" parent="294" name="user_id">
+    <column id="355" parent="298" name="user_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>20258</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="344" parent="294" name="motorbike_licence">
+    <column id="356" parent="298" name="motorbike_licence">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>20819</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="345" parent="294" name="contract_image_url">
+    <column id="357" parent="298" name="contract_image_url">
       <Position>4</Position>
       <StateNumber>21068</StateNumber>
       <StoredType>varchar|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="346" parent="294" name="start_date">
+    <column id="358" parent="298" name="start_date">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StateNumber>20258</StateNumber>
       <StoredType>date|0s</StoredType>
       <TypeId>1082</TypeId>
     </column>
-    <column id="347" parent="294" name="end_date">
+    <column id="359" parent="298" name="end_date">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StateNumber>20258</StateNumber>
       <StoredType>date|0s</StoredType>
       <TypeId>1082</TypeId>
     </column>
-    <foreign-key id="348" parent="294" name="fk_contracts_users">
+    <foreign-key id="360" parent="298" name="fk_contracts_users">
       <ColNames>user_id</ColNames>
       <ObjectId>16632</ObjectId>
       <StateNumber>20258</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>16596</RefTableId>
     </foreign-key>
-    <index id="349" parent="294" name="contracts_pkey">
+    <index id="361" parent="298" name="contracts_pkey">
       <ColNames>id</ColNames>
       <ObjectId>16628</ObjectId>
       <Primary>1</Primary>
@@ -5398,7 +5472,7 @@ false posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="350" parent="294" name="contracts_image_url_key">
+    <index id="362" parent="298" name="contracts_image_url_key">
       <ColNames>contract_image_url</ColNames>
       <ObjectId>16630</ObjectId>
       <StateNumber>20258</StateNumber>
@@ -5408,57 +5482,57 @@ false posixrules
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="351" parent="294" name="contracts_pkey">
+    <key id="363" parent="298" name="contracts_pkey">
       <ObjectId>16629</ObjectId>
       <Primary>1</Primary>
       <StateNumber>20258</StateNumber>
       <UnderlyingIndexId>16628</UnderlyingIndexId>
     </key>
-    <key id="352" parent="294" name="contracts_image_url_key">
+    <key id="364" parent="298" name="contracts_image_url_key">
       <ObjectId>16631</ObjectId>
       <StateNumber>20258</StateNumber>
       <UnderlyingIndexId>16630</UnderlyingIndexId>
     </key>
-    <check id="353" parent="295" name="motorbikes_status_check">
+    <check id="365" parent="299" name="motorbikes_status_check">
       <ColNames>status</ColNames>
       <ObjectId>16652</ObjectId>
       <Predicate>(status)::text = ANY ((ARRAY[&apos;working&apos;::character varying, &apos;repairing&apos;::character varying])::text[])</Predicate>
       <StateNumber>20875</StateNumber>
     </check>
-    <column id="354" parent="295" name="license">
+    <column id="366" parent="299" name="license">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>20882</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="355" parent="295" name="model">
+    <column id="367" parent="299" name="model">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>20875</StateNumber>
       <StoredType>varchar|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="356" parent="295" name="status">
+    <column id="368" parent="299" name="status">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>20875</StateNumber>
       <StoredType>varchar|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="357" parent="295" name="longitude">
+    <column id="369" parent="299" name="longitude">
       <Position>4</Position>
       <StateNumber>20875</StateNumber>
       <StoredType>real|0s</StoredType>
       <TypeId>700</TypeId>
     </column>
-    <column id="358" parent="295" name="latitude">
+    <column id="370" parent="299" name="latitude">
       <Position>5</Position>
       <StateNumber>20875</StateNumber>
       <StoredType>real|0s</StoredType>
       <TypeId>700</TypeId>
     </column>
-    <index id="359" parent="295" name="motorbikes_pkey">
+    <index id="371" parent="299" name="motorbikes_pkey">
       <ColNames>license</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16658</ObjectId>
@@ -5470,14 +5544,14 @@ false posixrules
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="360" parent="295" name="motorbikes_pkey">
+    <key id="372" parent="299" name="motorbikes_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16659</ObjectId>
       <Primary>1</Primary>
       <StateNumber>20875</StateNumber>
       <UnderlyingIndexId>16658</UnderlyingIndexId>
     </key>
-    <column id="361" parent="296" name="id">
+    <column id="373" parent="300" name="id">
       <IdentityKind>always</IdentityKind>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5486,28 +5560,28 @@ false posixrules
       <SequenceId>16595</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="362" parent="296" name="first_name">
+    <column id="374" parent="300" name="first_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>20256</StateNumber>
       <StoredType>varchar|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="363" parent="296" name="last_name">
+    <column id="375" parent="300" name="last_name">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>20256</StateNumber>
       <StoredType>varchar|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="364" parent="296" name="phone_number">
+    <column id="376" parent="300" name="phone_number">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>20256</StateNumber>
       <StoredType>varchar|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <index id="365" parent="296" name="users_pkey">
+    <index id="377" parent="300" name="users_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16605</ObjectId>
@@ -5516,7 +5590,7 @@ false posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="366" parent="296" name="users_pkey">
+    <key id="378" parent="300" name="users_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16606</ObjectId>
       <Primary>1</Primary>
