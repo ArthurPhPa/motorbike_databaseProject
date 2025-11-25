@@ -148,7 +148,7 @@
           "label": "contracts",
           "sourceEntityDetails": {
             "id": "b89428b3-97aa-4218-a918-5f63cfc38586",
-            "minCardinality": "Optional",
+            "minCardinality": "Mandatory",
             "maxCardinality": "One"
           },
           "targetEntityDetails": {
@@ -473,7 +473,7 @@
         "target": "b2596faf-8771-454f-80c9-68d0bfafd55e",
         "data": {
           "id": "78dcbf58-eabb-4c22-924d-8ba779244c0a->b2596faf-8771-454f-80c9-68d0bfafd55e",
-          "minCardinality": "Optional",
+          "minCardinality": "Mandatory",
           "maxCardinality": "One"
         }
       },
@@ -564,5 +564,5 @@
     "id": 83948
   },
   "id": 172569,
-  "updatedAtTimestamp": 1764075917
+  "updatedAtTimestamp": 1764076082
 }
