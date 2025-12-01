@@ -1,45 +1,58 @@
-
-
 DROP TABLE IF EXISTS contracts;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS motorbikes;
+DROP TABLE IF EXISTS users;
+
 
 CREATE TABLE users
 (
     id           INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     first_name   VARCHAR NOT NULL,
     last_name    VARCHAR NOT NULL,
-    phone_number VARCHAR NOT NULL
-
+    phone_number VARCHAR NOT NULL,
+    type         VARCHAR NOT NULL,
+    email        VARCHAR NOT NULL UNIQUE,
+    password     VARCHAR NOT NULL,
+    CONSTRAINT chk_type CHECK (type IN ('admin', 'owner', 'user'))
 );
 
 CREATE TABLE motorbikes
 (
-    license        VARCHAR(50) PRIMARY KEY,
-    model          VARCHAR NOT NULL,
-    status	   VARCHAR NOT NULL,
-    longitude      REAL,
-    latitude       REAL,
+    license   VARCHAR(50) PRIMARY KEY,
+    owner_id  INT,
+    model     VARCHAR NOT NULL,
+    status    VARCHAR NOT NULL,
+    longitude REAL,
+    latitude  REAL,
 
-    CONSTRAINT chk_status CHECK (status IN ('working', 'in repair'))
+    CONSTRAINT fk_motorbikes_owner
+        FOREIGN KEY (owner_id)
+            REFERENCES users (id),
 
+    CONSTRAINT chk_status CHECK (status IN ('available', 'rented', 'maintenance'))
 );
 
 
 CREATE TABLE bookings
 (
-    id                       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id                  INT            NOT NULL,
-    motorbike_licence_number VARCHAR(50)    NOT NULL,
-    contract_image_url       VARCHAR UNIQUE NOT NULL,
-    start_date               DATE           NOT NULL,
-    end_date                 DATE           NOT NULL,
+    id                 INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id            INT         NOT NULL,
+    motorbike_license  VARCHAR(50) NOT NULL,
+    contract_image_url VARCHAR,
+    start_date         DATE        NOT NULL,
+    end_date           DATE        NOT NULL,
+    total_cost         DECIMAL(10, 2),
+    booking_status     VARCHAR DEFAULT 'pending',
+
+    CONSTRAINT chk_booking_status CHECK (booking_status IN ('cancelled', 'pending', 'active', 'completed')),
 
     CONSTRAINT fk_contracts_users
         FOREIGN KEY (user_id)
             REFERENCES users (id),
 
     CONSTRAINT fk_contracts_motorbikes
-        FOREIGN KEY (motorbike_licence_number)
-            REFERENCES motorbikes (license_number)
+        FOREIGN KEY (motorbike_license)
+            REFERENCES motorbikes (license)
 )
+
+
+
