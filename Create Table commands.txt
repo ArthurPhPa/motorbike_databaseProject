@@ -1,7 +1,10 @@
-DROP TABLE IF EXISTS contracts;
-DROP TABLE IF EXISTS motorbikes;
-DROP TABLE IF EXISTS users;
-
+DROP TABLE IF EXISTS bookings CASCADE;
+DROP TABLE IF EXISTS motorbikes CASCADE ;
+DROP TABLE IF EXISTS owners CASCADE ;
+DROP TABLE IF EXISTS users CASCADE ;
+DROP TABLE IF EXISTS customers CASCADE ;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS payment_methods;
 
 CREATE TABLE users
 (
@@ -9,10 +12,22 @@ CREATE TABLE users
     first_name   VARCHAR NOT NULL,
     last_name    VARCHAR NOT NULL,
     phone_number VARCHAR NOT NULL,
-    type         VARCHAR NOT NULL,
     email        VARCHAR NOT NULL UNIQUE,
     password     VARCHAR NOT NULL,
-    CONSTRAINT chk_type CHECK (type IN ('admin', 'owner', 'user'))
+    type         VARCHAR NOT NULL,
+
+    CONSTRAINT chk_type CHECK (type IN ('admin', 'customer', 'owner'))
+);
+
+CREATE TABLE owners (
+    user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    business_name VARCHAR,
+    stripe_customer_id VARCHAR
+);
+
+CREATE TABLE customers (
+    user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    owner_id INT REFERENCES owners(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE motorbikes
@@ -26,7 +41,7 @@ CREATE TABLE motorbikes
 
     CONSTRAINT fk_motorbikes_owner
         FOREIGN KEY (owner_id)
-            REFERENCES users (id),
+            REFERENCES owners (user_id),
 
     CONSTRAINT chk_status CHECK (status IN ('available', 'rented', 'maintenance'))
 );
@@ -35,24 +50,102 @@ CREATE TABLE motorbikes
 CREATE TABLE bookings
 (
     id                 INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id            INT         NOT NULL,
+    customer_id            INT         NOT NULL,
     motorbike_license  VARCHAR(50) NOT NULL,
     contract_image_url VARCHAR,
     start_date         DATE        NOT NULL,
     end_date           DATE        NOT NULL,
     total_cost         DECIMAL(10, 2),
-    booking_status     VARCHAR DEFAULT 'pending',
+    status     VARCHAR DEFAULT 'pending',
 
-    CONSTRAINT chk_booking_status CHECK (booking_status IN ('cancelled', 'pending', 'active', 'completed')),
+    CONSTRAINT chk_booking_status CHECK (status IN ('cancelled', 'pending', 'active', 'completed')),
 
     CONSTRAINT fk_contracts_users
-        FOREIGN KEY (user_id)
-            REFERENCES users (id),
+        FOREIGN KEY (customer_id)
+            REFERENCES customers (user_id),
 
     CONSTRAINT fk_contracts_motorbikes
         FOREIGN KEY (motorbike_license)
             REFERENCES motorbikes (license)
-)
+);
+
+CREATE TABLE payment_methods (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id INT REFERENCES customers(user_id) ON DELETE CASCADE,
+    stripe_payment_method_id VARCHAR NOT NULL,
+
+    card_brand VARCHAR(20),
+    last_4_digits VARCHAR(4),
+    expiry_month INT,
+    expiry_year INT
+);
+
+CREATE TABLE transactions (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    booking_id INT REFERENCES bookings(id),
+    payment_method_id INT REFERENCES payment_methods(id) ON DELETE SET NULL,
+    stripe_charge_id VARCHAR,
+    amount DECIMAL(10, 2) NOT NULL,
+    currency VARCHAR(3) DEFAULT 'baht',
+    status VARCHAR CHECK (status IN ('pending', 'succeeded', 'failed', 'refunded')),
+    failure_reason TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+
+
+
+create function fn_get_all_owned_motorbikes(o_id integer) returns SETOF motorbikes
+    language plpgsql
+as
+$$
+DECLARE
+    v_usr owners;
+BEGIN
+
+    SELECT *
+    INTO v_usr
+    FROM owners as o
+    WHERE o.user_id = o_id;
+
+IF o_id ISNULL THEN
+        RAISE EXCEPTION 'Access Denied: User % is not an owner.', o_id;
+    END IF;
+
+    RETURN QUERY
+    SELECT *
+    FROM motorbikes as m
+    WHERE m.owner_id = o_id
+    ORDER BY status;
+
+end;
+$$;
+
+create function fn_get_user_by_id(u_id INT) returns users
+    language plpgsql
+as
+$$
+
+BEGIN
+    SELECT *
+    FROM users
+    where users.id = u_id
+    LIMIT 1;
+end;
+$$;
+
+create function fn_get_motorbike_by_licence(m_licence VARCHAR) returns motorbikes
+    language plpgsql
+as
+$$
+
+BEGIN
+    SELECT *
+    FROM motorbikes
+    where license = m_licence
+    LIMIT 1;
+end;
+$$;
 
 
 
