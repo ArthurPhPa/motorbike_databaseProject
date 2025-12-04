@@ -1,57 +1,121 @@
+-- Create 2 Owners (Note: The function automatically creates their subscription)
+SELECT fn_create_owner('Somchai', 'Jaidee', '0811111111', 'securepass1', 'Somchai Scooters', 'somchai@owner.com');
+SELECT fn_create_owner('Jessica', 'Jones', '0822222222', 'securepass2', 'Phuket Bike Rentals', 'jessica@owner.com');
 
-DO $$
-BEGIN
-    PERFORM fn_create_motorbike('1230bb', 'Honda Wave 110i', 'working', 100.327136, 13.794899);
-    PERFORM fn_create_motorbike('1231bb', 'Honda PCX 160', 'working', 100.327136, 13.794899);
-    PERFORM fn_create_motorbike('1232bb', 'Yamaha Grand Filano', 'working', 100.327136, 13.794899);
-    PERFORM fn_create_motorbike('1233bb', 'Honda Scoopy i', 'repairing', 100.327136, 13.794899);
-    PERFORM fn_create_motorbike('1234bb', 'Honda Click 160', 'working', 100.327136, 13.794899);
-    PERFORM fn_create_motorbike('1235bb', 'Yamaha XMAX 300', 'working', 100.327136, 13.794899);
-    PERFORM fn_create_motorbike('1236bb', 'Vespa Sprint 150', 'repairing', 100.327136, 13.794899);
-    PERFORM fn_create_motorbike('1237bb', 'Honda Forza 350', 'working', 100.327136, 13.794899);
-    PERFORM fn_create_motorbike('1238bb', 'Honda Lead 125', 'working', 100.327136, 13.794899);
-    PERFORM fn_create_motorbike('1239bb', 'Yamaha Finn', 'working', 100.327136, 13.794899);
-END $$;
+-- Create 2 Customers
+SELECT fn_create_customer('John', 'Doe', '0833333333', 'customerpass1', 'john.doe@gmail.com');
+SELECT fn_create_customer('Alice', 'Smith', '0844444444', 'customerpass2', 'alice.smith@yahoo.com');
+
+-- Create 1 Admin (Manual insert as no function exists for admin)
+INSERT INTO users (first_name, last_name, phone_number, email, password, type)
+VALUES ('Super', 'Admin', '0000000000', 'admin@system.com', 'adminpass', 'admin');
 
 
 
+INSERT INTO motorbikes (license, owner_id, model, status, price_per_day, price_per_week, price_per_month, longitude, latitude)
+VALUES 
+-- Somchai's Bikes (Bangkok area)
+('1KKB-1234', (SELECT id FROM users WHERE email = 'somchai@owner.com'), 'Honda Click 125i', 'available', 250.00, 1500.00, 4500.00, 100.5018, 13.7563),
+('1KKB-5678', (SELECT id FROM users WHERE email = 'somchai@owner.com'), 'Yamaha NMAX 155', 'rented', 500.00, 3200.00, 9000.00, 100.5231, 13.7211),
 
-DO $$
-BEGIN
-    PERFORM fn_create_user('Somchai', 'Jaidee', '0812345678');
-    PERFORM fn_create_user('Nattapong', 'Srisuk', '0898765432');
-    PERFORM fn_create_user('Pichai', 'Wongwat', '0861112222');
-    PERFORM fn_create_user('Malee', 'Thongdee', '0903334444');
-    PERFORM fn_create_user('Somsak', 'Prasert', '0825556666');
-    PERFORM fn_create_user('Arthit', 'Ratanaporn', '0917778888');
-    PERFORM fn_create_user('Kanda', 'Saelim', '0849990000');
-    PERFORM fn_create_user('Wichai', 'Boonmee', '0831234567');
-    PERFORM fn_create_user('Sunisa', 'Chaisri', '0928765432');
-    PERFORM fn_create_user('Anong', 'Sukhum', '0852223333');
-END $$;
+-- Jessica's Bikes (Phuket area)
+('8PKT-9999', (SELECT id FROM users WHERE email = 'jessica@owner.com'), 'Honda PCX 160', 'available', 600.00, 3800.00, 11000.00, 98.2923, 7.8932),
+('8PKT-1111', (SELECT id FROM users WHERE email = 'jessica@owner.com'), 'Honda Scoopy i', 'maintenance', 200.00, 1200.00, 3500.00, 98.2950, 7.9000);
 
 
+INSERT INTO payment_methods (user_id, stripe_payment_method_id, card_brand, last_4_digits, expiry_month, expiry_year)
+VALUES
+-- John Doe's Visa
+((SELECT id FROM users WHERE email = 'john.doe@gmail.com'), 'pm_123456789visa', 'visa', '4242', 12, 2026),
+-- Alice Smith's Mastercard
+((SELECT id FROM users WHERE email = 'alice.smith@yahoo.com'), 'pm_987654321master', 'mastercard', '8888', 05, 2027);
+
+
+INSERT INTO bookings (customer_id, motorbike_license, contract_image_url, start_date, end_date, total_cost, status)
+VALUES
+-- Active booking: John rents the Yamaha NMAX
+(
+    (SELECT id FROM users WHERE email = 'john.doe@gmail.com'), 
+    '1KKB-5678', 
+    'https://s3.aws.com/contracts/contract_001.jpg',
+    CURRENT_DATE - INTERVAL '2 days', 
+    CURRENT_DATE + INTERVAL '5 days', 
+    3500.00, 
+    'active'
+),
+-- Completed booking: Alice rented the Honda Click last week
+(
+    (SELECT id FROM users WHERE email = 'alice.smith@yahoo.com'), 
+    '1KKB-1234', 
+    'https://s3.aws.com/contracts/contract_002.jpg',
+    CURRENT_DATE - INTERVAL '10 days', 
+    CURRENT_DATE - INTERVAL '3 days', 
+    1750.00, 
+    'completed'
+),
+-- Cancelled booking: John tried to rent the PCX
+(
+    (SELECT id FROM users WHERE email = 'john.doe@gmail.com'), 
+    '8PKT-9999', 
+    NULL,
+    CURRENT_DATE + INTERVAL '10 days', 
+    CURRENT_DATE + INTERVAL '12 days', 
+    1200.00, 
+    'cancelled'
+);
 
 
 
 
-DO $$
-BEGIN
-    PERFORM fn_create_booking(1, '1230bb', NULL, '2025-01-01', '2025-01-05');
-    PERFORM fn_create_booking(2, '1231bb', NULL, '2025-01-02', '2025-01-07');
-    PERFORM fn_create_booking(3, '1232bb', NULL, '2025-01-05', '2025-01-10');
-    PERFORM fn_create_booking(4, '1234bb', NULL, '2025-01-01', '2025-01-03');
-    PERFORM fn_create_booking(5, '1235bb', NULL, '2025-01-10', '2025-01-15');
-    PERFORM fn_create_booking(6, '1237bb', NULL, '2025-01-12', '2025-01-18');
-    PERFORM fn_create_booking(7, '1238bb', NULL, '2025-02-01', '2025-02-05');
-    PERFORM fn_create_booking(8, '1239bb', NULL, '2025-02-01', '2025-02-05');
-    PERFORM fn_create_booking(9, '1230bb', NULL, '2025-02-10', '2025-02-15');
-    PERFORM fn_create_booking(10, '1231bb', NULL, '2025-02-10', '2025-02-12');
-    PERFORM fn_create_booking(1, '1232bb', NULL, '2025-02-15', '2025-02-20');
-    PERFORM fn_create_booking(2, '1234bb', NULL, '2025-03-01', '2025-03-07');
-    PERFORM fn_create_booking(3, '1235bb', NULL, '2025-03-05', '2025-03-10');
-    PERFORM fn_create_booking(4, '1237bb', NULL, '2025-03-10', '2025-03-15');
-    PERFORM fn_create_booking(5, '1238bb', NULL, '2025-03-20', '2025-03-25');
-END $$;
+
+INSERT INTO transactions (booking_id, payment_method_id, stripe_charge_id, amount, status, failure_reason)
+VALUES
+-- Payment for John's Active Booking (Success)
+(
+    1, -- Assuming ID 1 based on insertion order
+    (SELECT id FROM payment_methods WHERE card_brand = 'visa' LIMIT 1),
+    'ch_3k4j5h23k4j',
+    3500.00,
+    'succeeded',
+    NULL
+),
+-- Payment for Alice's Completed Booking (Success)
+(
+    2, -- Assuming ID 2
+    (SELECT id FROM payment_methods WHERE card_brand = 'mastercard' LIMIT 1),
+    'ch_9988776655',
+    1750.00,
+    'succeeded',
+    NULL
+),
+-- Failed payment attempt for John
+(
+    3, -- Assuming ID 3
+    (SELECT id FROM payment_methods WHERE card_brand = 'visa' LIMIT 1),
+    'ch_failed_123',
+    1200.00,
+    'failed',
+    'Insufficient funds'
+);
+
+
+
+
+SELECT 
+    b.id AS booking_id,
+    u.first_name || ' ' || u.last_name AS customer_name,
+    m.model AS bike_model,
+    o.business_name AS owner_business,
+    b.start_date,
+    b.end_date,
+    b.status AS booking_status
+FROM bookings b
+JOIN users u ON b.customer_id = u.id
+JOIN motorbikes m ON b.motorbike_license = m.license
+JOIN owners o ON m.owner_id = o.user_id;
+
+
+
+
 
 

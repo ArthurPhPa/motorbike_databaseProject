@@ -5,16 +5,18 @@ DROP TABLE IF EXISTS users CASCADE ;
 DROP TABLE IF EXISTS customers CASCADE ;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS payment_methods;
+DROP TABLE IF EXISTS owner_subscriptions;
 
 CREATE TABLE users
 (
     id           INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     first_name   VARCHAR NOT NULL,
     last_name    VARCHAR NOT NULL,
-    phone_number VARCHAR NOT NULL,
-    email        VARCHAR NOT NULL UNIQUE,
+    phone_number VARCHAR NOT NULL UNIQUE,
+    email        VARCHAR UNIQUE,
     password     VARCHAR NOT NULL,
     type         VARCHAR NOT NULL,
+    created_at   TIMESTAMP NOT NULL DEFAULT NOW(),
 
     CONSTRAINT chk_type CHECK (type IN ('admin', 'customer', 'owner'))
 );
@@ -26,18 +28,20 @@ CREATE TABLE owners (
 );
 
 CREATE TABLE customers (
-    user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-    owner_id INT REFERENCES owners(user_id) ON DELETE CASCADE
+    user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE motorbikes
 (
-    license   VARCHAR(50) PRIMARY KEY,
-    owner_id  INT,
-    model     VARCHAR NOT NULL,
-    status    VARCHAR NOT NULL,
-    longitude REAL,
-    latitude  REAL,
+    license         VARCHAR(50) PRIMARY KEY,
+    owner_id        INT,
+    model           VARCHAR NOT NULL,
+    status          VARCHAR NOT NULL,
+    price_per_day   DECIMAL(10, 2),
+    price_per_week  DECIMAL(10, 2),
+    price_per_month DECIMAL(10, 2),
+    longitude       REAL,
+    latitude        REAL,
 
     CONSTRAINT fk_motorbikes_owner
         FOREIGN KEY (owner_id)
@@ -51,6 +55,7 @@ CREATE TABLE bookings
 (
     id                 INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     customer_id            INT         NOT NULL,
+    owner_id           INT,
     motorbike_license  VARCHAR(50) NOT NULL,
     contract_image_url VARCHAR,
     start_date         DATE        NOT NULL,
@@ -58,7 +63,7 @@ CREATE TABLE bookings
     total_cost         DECIMAL(10, 2),
     status     VARCHAR DEFAULT 'pending',
 
-    CONSTRAINT chk_booking_status CHECK (status IN ('cancelled', 'pending', 'active', 'completed')),
+    CONSTRAINT chk_booking_status CHECK (status IN ('cancelled', 'pending', 'active', 'paid','completed')),
 
     CONSTRAINT fk_contracts_users
         FOREIGN KEY (customer_id)
@@ -66,13 +71,19 @@ CREATE TABLE bookings
 
     CONSTRAINT fk_contracts_motorbikes
         FOREIGN KEY (motorbike_license)
-            REFERENCES motorbikes (license)
+            REFERENCES motorbikes (license),
+
+    CONSTRAINT fk_contracts_owners
+        FOREIGN KEY (owner_id)
+            REFERENCES owners (user_id)
 );
 
 CREATE TABLE payment_methods (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id INT REFERENCES customers(user_id) ON DELETE CASCADE,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
     stripe_payment_method_id VARCHAR NOT NULL,
+    -- this is a ticket -> and we send this to stripe, they will convert to card number and
+    -- handle the payment
 
     card_brand VARCHAR(20),
     last_4_digits VARCHAR(4),
@@ -80,22 +91,356 @@ CREATE TABLE payment_methods (
     expiry_year INT
 );
 
-CREATE TABLE transactions (
+CREATE TABLE owner_subscriptions (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    booking_id INT REFERENCES bookings(id),
-    payment_method_id INT REFERENCES payment_methods(id) ON DELETE SET NULL,
-    stripe_charge_id VARCHAR,
-    amount DECIMAL(10, 2) NOT NULL,
-    currency VARCHAR(3) DEFAULT 'baht',
-    status VARCHAR CHECK (status IN ('pending', 'succeeded', 'failed', 'refunded')),
-    failure_reason TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
+    owner_id INT REFERENCES owners(user_id) ON DELETE CASCADE,
+    amount DECIMAL(10, 2) DEFAULT 999.00,
+    status VARCHAR CHECK (status IN ('pending', 'paid', 'active', 'past_due', 'cancelled')),
+    current_period_start DATE DEFAULT CURRENT_DATE,
+    current_period_end DATE
+);
+
+CREATE TABLE transactions
+(
+    id                    INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    booking_id            INT REFERENCES bookings (id),
+    owner_subscription_id INT REFERENCES owner_subscriptions (id),
+
+    payment_method_id     INT            REFERENCES payment_methods (id) ON DELETE SET NULL,
+    amount                DECIMAL(10, 2) NOT NULL,
+    status VARCHAR CHECK (status IN ('pending', 'succeeded', 'failed')),
+    created_at            TIMESTAMP DEFAULT NOW()
+        CONSTRAINT chk_txn_source
+            CHECK (
+                (booking_id IS NOT NULL AND owner_subscription_id IS NULL) OR
+                (booking_id IS NULL AND owner_subscription_id IS NOT NULL)
+                )
+);
+
+CREATE TABLE bindings
+(
+    user_id              INT REFERENCES customers (user_id),
+    owner_id            INT REFERENCES owners (user_id),
+    PRIMARY KEY (user_id, owner_id) -- Prevents duplicates
 );
 
 
+-- 1. Drop the version (4 args)
+DROP FUNCTION IF EXISTS fn_create_customer(varchar, varchar, varchar, varchar);
+
+-- 2. Drop the version (5 args)
+DROP FUNCTION IF EXISTS fn_create_customer(varchar, varchar, varchar, varchar, varchar);
+
+create function fn_get_user_by_id(u_id integer) returns users
+    language plpgsql
+as
+$$
+BEGIN
+    SELECT *
+    FROM users
+    where users.id = u_id
+    LIMIT 1;
+end;
+$$;
+
+create function fn_get_motorbike_by_licence(m_licence character varying) returns motorbikes
+    language plpgsql
+as
+$$
+BEGIN
+    SELECT *
+    FROM motorbikes
+    where license = m_licence
+    LIMIT 1;
+end;
+$$;
 
 
-create function fn_get_all_owned_motorbikes(o_id integer) returns SETOF motorbikes
+CREATE OR REPLACE FUNCTION fn_create_owner(
+    p_first_name VARCHAR,
+    p_last_name VARCHAR,
+    p_phone_number VARCHAR,
+    p_password VARCHAR,
+    p_business_name VARCHAR,
+    p_email VARCHAR DEFAULT NULL
+) RETURNS VOID
+LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    new_user_id INT;
+BEGIN
+    INSERT INTO users (
+        first_name,
+        last_name,
+        phone_number,
+        email,
+        password,
+        type
+        -- REMOVED 'created_at' so it uses the table default
+    )
+    VALUES (
+        p_first_name,
+        p_last_name,
+        p_phone_number,
+        p_email,
+        p_password,
+        'owner'
+    )
+    RETURNING id INTO new_user_id;
+
+    INSERT INTO owners (user_id, business_name)
+    VALUES (new_user_id, p_business_name);
+
+    INSERT INTO owner_subscriptions (owner_id, status, current_period_end)
+    -- cast for safety
+    VALUES (new_user_id, 'active', (CURRENT_DATE + INTERVAL '30 days')::DATE);
+END;
+$$;
+
+-- Fix fn_create_customer
+CREATE OR REPLACE FUNCTION fn_create_customer(
+    p_first_name VARCHAR,
+    p_last_name VARCHAR,
+    p_phone_number VARCHAR,
+    p_password VARCHAR,
+    p_email VARCHAR DEFAULT NULL
+) RETURNS VOID
+LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    new_user_id INT;
+BEGIN
+    INSERT INTO users (
+        first_name,
+        last_name,
+        phone_number,
+        email,
+        password,
+        type
+        -- REMOVED 'created_at' so it uses the table default
+    )
+    VALUES (
+        p_first_name,
+        p_last_name,
+        p_phone_number,
+        p_email,
+        p_password,
+        'customer'
+    )
+    RETURNING id INTO new_user_id;
+
+    INSERT INTO customers (user_id)
+    VALUES (new_user_id);
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE pr_book_bike(
+    p_customer_id INT,
+    p_motorbike_license VARCHAR,
+    p_start_date DATE,
+    p_end_date DATE,
+    p_contract_image_url VARCHAR DEFAULT NULL
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_price_per_day DECIMAL;
+    v_price_per_week DECIMAL;
+    v_price_per_month DECIMAL;
+
+    v_total_days INT;
+    v_total_cost DECIMAL;
+    v_new_booking_id INT;
+BEGIN
+    SELECT price_per_day , price_per_week,  price_per_month
+    INTO v_price_per_day, v_price_per_week, v_price_per_month
+    FROM motorbikes
+    WHERE license = p_motorbike_license
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Motorbike with license % not found', p_motorbike_license;
+    END IF;
+
+
+    IF EXISTS (
+        SELECT 1
+        FROM bookings
+        WHERE motorbike_license = p_motorbike_license
+          AND status IN ('active', 'pending')
+          AND (p_start_date < end_date)
+          AND (p_end_date > start_date)
+    ) THEN
+        RAISE EXCEPTION 'This motorbike is already booked for these dates.';
+    END IF;
+
+
+    v_total_days := (p_end_date - p_start_date);
+
+    IF v_total_days <= 0 THEN
+        RAISE EXCEPTION 'End date must be after start date';
+    END IF;
+
+    v_total_cost := 0;
+    IF v_price_per_month IS NOT NULL THEN
+        v_total_cost := (v_total_days / 30) * v_price_per_month;
+        v_total_days := v_total_days % 30;
+
+    end if;
+
+    IF v_price_per_week IS NOT NULL THEN
+        v_total_cost := (v_total_days / 7) * v_price_per_week;
+        v_total_days := v_total_days % 7;
+
+    end if;
+
+    IF v_price_per_day IS NOT NULL THEN
+        v_total_cost := v_total_cost + (v_total_days * v_price_per_day);
+    end if;
+
+
+    v_new_booking_id := fn_create_booking(
+            p_customer_id,
+            p_motorbike_license,
+            p_contract_image_url,
+            p_start_date,
+            p_end_date,
+            v_total_cost,
+            'pending'
+            );
+
+PERFORM fn_create_transaction(
+            v_new_booking_id,
+            NULL,
+            v_total_cost
+    );
+
+    RAISE NOTICE 'Booking % created with pending transaction for %', v_new_booking_id, v_total_cost;
+
+
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION fn_update_motorbike_prices(
+    p_owner_id INT,
+    p_license VARCHAR,
+    p_new_daily DECIMAL DEFAULT NULL,
+    p_new_weekly DECIMAL DEFAULT NULL,
+    p_new_monthly DECIMAL DEFAULT NULL
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM motorbikes
+        WHERE license = p_license
+        AND owner_id = p_owner_id
+    ) THEN
+        RAISE EXCEPTION 'Motorbike % not found or does not belong to owner ID %', p_license, p_owner_id;
+    END IF;
+
+    -- COALESCE checks if price is null
+    UPDATE motorbikes
+    SET
+        price_per_day   = COALESCE(p_new_daily, price_per_day),
+        price_per_week  = COALESCE(p_new_weekly, price_per_week),
+        price_per_month = COALESCE(p_new_monthly, price_per_month)
+    WHERE license = p_license;
+
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION fn_login_user(
+    p_phone_number VARCHAR,
+    p_password VARCHAR
+)
+RETURNS INT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_user_id INT;
+BEGIN
+    SELECT id
+    INTO v_user_id
+    FROM users
+    WHERE users.phone_number = p_phone_number
+    AND password = p_password; -- In a real app, you would compare Hashes, not plain text!
+
+    IF FOUND THEN
+        RETURN v_user_id;
+    ELSE
+        RETURN NULL;
+    END IF;
+END;
+$$;
+
+
+
+-- p_payment_success will probably be an outside thing from the server application
+create or replace PROCEDURE pr_pay_booking_transaction(p_transaction_id INT, p_payment_method_id INT,
+                                           p_payment_success BOOLEAN DEFAULT TRUE)
+    LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    v_transaction transactions;
+BEGIN
+
+    SELECT *
+    INTO v_transaction
+    FROM transactions as t
+    where t.id = p_transaction_id
+    FOR UPDATE;
+
+    IF v_transaction.status = 'succeeded' THEN
+        RAISE NOTICE 'transaction % has been paid already', p_transaction_id;
+        RETURN;
+    end if;
+
+    IF p_payment_success THEN
+        UPDATE transactions as t SET status = 'succeeded',
+        payment_method_id = p_payment_method_id
+        WHERE t.id = p_transaction_id;
+
+        UPDATE bookings as b SET status = 'paid'
+        WHERE b.id = v_transaction.booking_id;
+
+    ELSE
+        UPDATE transactions
+        SET status = 'failed',
+            payment_method_id = p_payment_method_id
+        WHERE id = p_transaction_id;
+
+    end if;
+end;
+$$;
+
+CREATE OR REPLACE FUNCTION fn_create_owner_subscription(
+    p_owner_id INT
+) RETURNS INT
+    LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    v_id INT;
+BEGIN
+    INSERT INTO owner_subscriptions (owner_id, amount, status,
+                                     current_period_start, current_period_end)
+    VALUES (p_owner_id, 999, 'pending',
+            CURRENT_DATE, CURRENT_DATE + 30) RETURNING id INTO v_id;
+
+    RETURN v_id;
+end;
+
+
+$$;
+
+create or replace function fn_get_all_owned_motorbikes(o_id integer) returns SETOF motorbikes
     language plpgsql
 as
 $$
@@ -121,29 +466,62 @@ IF o_id ISNULL THEN
 end;
 $$;
 
-create function fn_get_user_by_id(u_id INT) returns users
-    language plpgsql
-as
-$$
 
+CREATE OR REPLACE PROCEDURE pr_owner_subscribe(
+    p_owner_id INT
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_sub_id INT;
 BEGIN
-    SELECT *
-    FROM users
-    where users.id = u_id
-    LIMIT 1;
-end;
+
+    v_sub_id := fn_create_owner_subscription(p_owner_id);
+
+    PERFORM fn_create_transaction(
+        NULL,
+        v_sub_id,
+        999
+    );
+END;
 $$;
 
-create function fn_get_motorbike_by_licence(m_licence VARCHAR) returns motorbikes
-    language plpgsql
-as
-$$
 
+create or replace PROCEDURE pr_pay_subscription_transaction(p_transaction_id INT, p_payment_method_id INT,
+                                           p_payment_success BOOLEAN DEFAULT TRUE)
+    LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    v_transaction transactions;
 BEGIN
+
     SELECT *
-    FROM motorbikes
-    where license = m_licence
-    LIMIT 1;
+    INTO v_transaction
+    FROM transactions as t
+    where t.id = p_transaction_id
+    FOR UPDATE;
+
+    IF v_transaction.status = 'succeeded' THEN
+        RAISE NOTICE 'transaction % has been paid already', p_transaction_id;
+        RETURN;
+    end if;
+
+    IF p_payment_success THEN
+        UPDATE transactions as t SET status = 'succeeded',
+        payment_method_id = p_payment_method_id
+        WHERE t.id = p_transaction_id;
+
+        UPDATE owner_subscriptions as o_s SET status = 'paid'
+        WHERE o_s.id = v_transaction.owner_subscription_id;
+
+    ELSE
+        UPDATE transactions
+        SET status = 'failed',
+            payment_method_id = p_payment_method_id
+        WHERE id = p_transaction_id;
+
+    end if;
 end;
 $$;
 
